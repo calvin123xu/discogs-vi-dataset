@@ -1,0 +1,9 @@
+_code/*
+__pycache__/*
+.vscode/*
+*.pyc
+*.ipynb_checkpoints
+
+*.mp4
+*.meta
+*.log
