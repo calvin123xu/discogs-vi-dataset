@@ -188,7 +188,9 @@ Please cite the following publication when using the dataset:
 
 ## License
 
-TODO
+* The code in this repository is licensed under TODO.
+* The metadata is licensed under a [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+* Audio representations are available under request for non-commercial scientific research purposes only.
 
 ## Acknowledgements
 
