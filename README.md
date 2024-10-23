@@ -65,7 +65,7 @@ However, `Discogs-VI-20240701.jsonl.youtube_query_matched` contains more version
 python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py Discogs-VI-20240701.jsonl.youtube_query_matched music_dir/
 ```
 
-**NOTE**: We recommend parallelizing this operation because there are many audio files using `utilities/shuffle_and_split.sh`. However, if you use too many parallel processes you may get banned from YouTube. We experimented with 2-20 processes. After 10 processes we got banned a few times. In that case, you should stop downloading and wait a couple of days before trying again.
+**NOTE**: We recommend parallelizing this operation because there are many audio files using `utilities/shuffle_and_split.sh`. However, if you use too many parallel processes you may get banned from YouTube. We experimented with 2-20 processes. Using more than 10 processes got us banned a few times. In that case, you should stop downloading and wait a couple of days before trying again.
 
 ```bash
 utilities/shuffle_and_split.sh Discogs-VI-YT-20240701.jsonl 16
