@@ -3,14 +3,16 @@
 TODO doi zenodo
 <!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3826813.svg)](https://doi.org/10.5281/zenodo.3826813) -->
 
-Discogs-VI is a Version Identification (VI), also known as Cover Song Identification (CSI) dataset, created using editorial metadata from the [Discogs](https://discogs.com) database. The version relationship between millions of tracks were determined through rules based on writer artist, performer artist, and track title metadata. A large portion of these versions were mapped to official YouTube IDs to create its Discogs-VI-YT subset. The dataset is used for research by [Music Technology Group](https://www.upf.edu/web/mtg). This webpage contains summary information regarding the dataset and provides instructions on how to access and use it and the repository contains the code to re-create boths datasets and to download audio from the matched YouTube videos.
+Discogs-VI is a dataset of [music version](https://en.wikipedia.org/wiki/Cover_version) metadata and precomputed audio representations, created for research on version identification (VI), also referred to as cover song identification (CSI). It was created using editorial metadata from the public [Discogs](https://discogs.com) music database by identifying version relationships among millions of tracks, utilizing metadata matching based on artist and writer credits as well as track title metadata. The identified versions comprise the *Discogs-VI* dataset, with a large portion of it mapped to official music uploads on YouTube, resulting in the *Discogs-VI-YT* subset.
 
-Discogs regularly releases public data dumps containing comprehensive release metadata (such as artists, genres, styles, labels, release year, and country). See an [example](https://www.discogs.com/Prodigy-Firestarter/release/3804513) of a release page. See how the Discogs database is built [here](https://support.discogs.com/hc/en-us/articles/360008545114-Overview-Of-How-DiscogsIs-Built). You can see some statistics for all music releases submitted to Discogs on their [explore page](https://www.discogs.com/search/).
+In the VI literature the set of tracks that are versions of each other is defined as a *clique*. Here’s an example of the metadata for a [clique](./data/example_clique.json). *Discogs-VI* contains about 1.9 million versions belonging to around 348,000 cliques, while *Discogs-VI-YT* includes 493,000 versions across 98,000 cliques.
 
-In the VI literature the set of tracks that are versions of each other is defined as a *clique*. Here’s an example of the metadata for a [clique](./data/example_clique.json). Discogs-VI contains about 1.9 million versions belonging to around 348,000 cliques, while Discogs-VI-YT includes 493,000 versions across 98,000 cliques.
+This website accompanies the dataset and the related publication, providing summary information, instructions on access and usage, as well as the code to re-create the dataset, including audio downloads from the matched YouTube videos.
+
 
 ## Table of contents
 
+* [Discogs](#discogs)
 * [Dependencies](#dependencies)
 * [Download](#download)
   * [Metadata](#metadata)
@@ -25,6 +27,11 @@ In the VI literature the set of tracks that are versions of each other is define
 * [Cite](#cite)
 * [License](#license)
 
+## Discogs
+
+Discogs regularly releases public [data dumps](https://www.discogs.com/data) containing comprehensive release metadata (such as artists, genres, styles, labels, release year, and country). See an [example](https://www.discogs.com/Prodigy-Firestarter/release/3804513) of a release page. See how the Discogs database is built [here](https://support.discogs.com/hc/en-us/articles/360008545114-Overview-Of-How-DiscogsIs-Built). You can see some statistics for all music releases submitted to Discogs on their [explore page](https://www.discogs.com/search/).
+
+
 ## Dependencies
 
 We use Python 3.10.9 on Linux.
@@ -38,7 +45,7 @@ conda activate discogs-vi-dataset
 
 ## Download
 
-Three types of data are associated with the dataset: clique metadata (Discogs-VI), clique metadata with YouTube ID-matched versions (Discogs-VI-YT), and audio representations such as CQT (Constant-Q Transform) extracted for the versions of Discogs-VI. This section provides details on how to access each type of data.
+Three types of data are associated with the dataset: clique metadata (*Discogs-VI*), clique metadata with YouTube ID-matched versions (*Discogs-VI-YT*), and audio representations such as CQT (Constant-Q Transform) extracted for the versions of Discogs-VI. This section provides details on how to access each type of data.
 
 ### Metadata
 
@@ -49,13 +56,13 @@ We provide all the metadata including the intermediary files of the dataset crea
 
 ### Audio
 
-You can download the audio files corresponding to the official YouTube IDs of the versions. In our experiments, we used exactly these IDs.
+You can download the audio files corresponding to the YouTube IDs of the versions. In our experiments, we used exactly these IDs.
 
 ```bash
 python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py Discogs-VI-YT-20240701.jsonl music_dir/
 ```
 
-However, `Discogs-VI-20240701.jsonl.youtube_query_matched` contains more versions with YouTube IDs (Read the paper for understanding why or check this [section](#main-files)).
+However, `Discogs-VI-20240701.jsonl.youtube_query_matched` contains more versions with YouTube IDs (read the paper for understanding why or check this [section](#main-files)).
 
 ```bash
 python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py Discogs-VI-20240701.jsonl.youtube_query_matched music_dir/
@@ -75,7 +82,7 @@ python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py 
 
 ### Audio representations
 
-This repository does not contain the code for extracting the CQT audio representations used to train the `Discogs-VINet` described in the paper, nor the features themselves. The model and code to extract the features are available in a separate [repository](https://github.com/raraz15/Discogs-VINet). The features that we extracted are available upon request **strictly** for research purposes. You can contact us for making a request.
+This repository does not contain the code for extracting the CQT audio representations used to train the `Discogs-VINet` described in the paper, nor the features themselves. The model and code to extract the features are available in a separate [repository](https://github.com/raraz15/Discogs-VINet). The features we extracted are available upon request for non-commercial scientific research purposes only. Please contact [Music Technology Group](https://www.upf.edu/web/mtg/contact) to make a request.
 
 Contact: R. Oğuz Araz <recepoguz.araz@upf.edu>
 
@@ -85,16 +92,16 @@ Below you can find some information about the contents of the dataset and how to
 
 ### Main files
 
-* `Discogs-VI-20240701.jsonl` corresponds to Discogs-VI dataset which contains the cliques and their metadata. The versions are not mapped to Youtube URLs.
-* `Discogs-VI-YT-20240701.jsonl` corresponds to Discogs-VI-YT dataset where individual versions of Discogs-VI are mapped to Youtube URLs and postprocessed so that each clique has at least two downloaded versions.
+* `Discogs-VI-20240701.jsonl` corresponds to the *Discogs-VI* dataset which contains all identified cliques and their metadata. The versions are not mapped to Youtube IDs.
+* `Discogs-VI-YT-20240701.jsonl` corresponds to *Discogs-VI-YT* dataset subset, with versions mapped to YouTube IDs and post-processing to ensure that each clique has at least two downloaded versions.
 * However we could match much more videos than we could download in Barcelona between 2023-2024. Maybe depending on your location you can download more. `Discogs-VI-20240701.jsonl.youtube_query_matched` contains all these videos.
-  * Some versions are matched to more than one alternative YouTube ID (1.4 video per version on average) and the matches are sorted from the highest quality match to the lowest, although all matches are official matches.
+  * Some versions are matched to more than one alternative YouTube ID (1.4 videos per version on average) and the matches are sorted from the highest quality match to the lowest, although all matches are matches to official uploads.
 * `Discogs-VI-20240701.jsonl` and `Discogs-VI-YT-20240701.jsonl` contain rich metadata, therefore these files are large in size (around 7 GB and 4 GB). Therefore we provide a file where only clique, version, and Youtube IDs are provided: `Discogs-VI-YT-light-20240701.json`
 * We then create train, validation, and test partitions from `Discogs-VI-YT-light-20240701.jsonl` after dealing with Da-TACOS and SHS100K datasets (see the paper for more information).
 * `discogs_20240701_artists.xml.jsonl.clean` contains detailed artist related information.
-* `Discogs-VI-YT-20240701.jsonl.demo` should be used with the streamlit demo for visualization purposes.
+* `Discogs-VI-YT-20240701.jsonl.demo` should be used with the Streamlit demo for visualization purposes.
 
-**NOTE**: Every clique and version has a unique ID associated to them. Currently the clique IDs change between Discogs dumps. I intend to fix this later.
+**NOTE**: Every clique and version has a unique ID associated to them. Currently the clique IDs change between Discogs dumps (will be fixed in the code later).
 
 ### Intermediary files
 
@@ -150,7 +157,7 @@ Please refer to the code for more examples.
 
 ## Discogs-VI-YT Streamlit demo
 
-Run the demo with streamlit using:
+Run the demo with Streamlit using:
 
 ```bash
 streamlit run demo.py --server.fileWatcherType -- Discogs-VI-YT-20240701.jsonl.demo
@@ -160,7 +167,7 @@ streamlit run demo.py --server.fileWatcherType -- Discogs-VI-YT-20240701.jsonl.d
 
 ## Re-create the dataset
 
-The steps to re-create the dataset is detailed in a separate [README](./README-recreate.md) file. Since Discogs database is growing one can run the pipeline periodically and extend the dataset. We plan to create a new version of the dataset every year or so.
+The steps to re-create the dataset is detailed in a separate [README](./README-recreate.md) file. Since Discogs database is growing one can run the scripts periodically and extend the dataset. We plan to create a new version of the dataset every year or so.
 
 ## Cite
 
@@ -181,7 +188,9 @@ Please cite the following publication when using the dataset:
 
 ## License
 
-TODO
+* The code in this repository is licensed under TODO.
+* The metadata is licensed under a [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
+* Audio representations are available under request for non-commercial scientific research purposes only.
 
 ## Acknowledgements
 
