@@ -1,7 +1,6 @@
 # Discogs-VI Dataset
 
-TODO doi zenodo
-<!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3826813.svg)](https://doi.org/10.5281/zenodo.3826813) -->
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.13983028.svg)](https://doi.org/10.5281/zenodo.13983028)
 
 Discogs-VI is a dataset of [musical version](https://en.wikipedia.org/wiki/Cover_version) metadata and pre-computed audio representations, created for research on version identification (VI), also referred to as cover song identification (CSI). It was created using editorial metadata from the public [Discogs](https://discogs.com) music database by identifying version relationships among millions of tracks, utilizing metadata matching based on artist and writer credits as well as track title metadata. The identified versions comprise the *Discogs-VI* dataset, with a large portion of it mapped to official music uploads on YouTube, resulting in the *Discogs-VI-YT* subset.
 
@@ -47,9 +46,7 @@ Three types of data are associated with the dataset: clique metadata (*Discogs-V
 
 ### Metadata
 
-TODO upload to zenodo, add the url here.
-
-We provide the dataset including the intermediary files of the creation process. Due to their sizes, they are separated into two directories so that you do not have to download everything. If your goal is to use the dataset and start working, download `main.zip` (1.4 GB compressed, 21 GB uncompressed).  If for some reason you are interested in the intermediary files, download `intermediary.zip` (8.7 GB compressed, 46 GB uncompressed). Contents of these folders are provided in [this section](#data-structure).
+We provide the dataset including the intermediary files of the creation process. Due to their sizes, they are separated into two directories so that you do not have to download everything. If your goal is to use the dataset and start working, download `main.zip` (1.4 GB compressed, 21 GB uncompressed). If for some reason you are interested in the intermediary files, download `intermediary.zip` (8.7 GB compressed, 46 GB uncompressed). Contents of these folders are provided in [this section](#data-structure). You can download the data from [Zenodo](https://doi.org/10.5281/zenodo.13983028)
 
 ### Audio
 
