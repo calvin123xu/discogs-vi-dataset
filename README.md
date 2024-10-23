@@ -169,12 +169,12 @@ The steps to re-create the dataset is detailed in a separate [README](./README-r
 
 Please cite the following publication when using the dataset:
 
-> R. O. Araz, X. Serra, and D. Bogdanov, "Discogs-VI: A musical version identification dataset based on public editorial metadata," in Proc. of the 25th Int. Soc. for Music Information Retrieval Conf. (ISMIR), 2024.
+> R. O. Araz, X. Serra, and D. Bogdanov, "Discogs-VI: A musical version identification dataset based on public editorial metadata," in Proceedings of the 25th International Society for Music Information Retrieval Conference (ISMIR), 2024.
 
 ```bibtex
 @inproceedings{araz_discogs-vi_2024,
  title = {Discogs-{VI}: {A} musical version identification dataset based on public editorial metadata},
- booktitle = {Proc. of the 25th {Int}. {Soc}. for {Music} {Information} {Retrieval} {Conf}. ({ISMIR})},
+ booktitle = {Proceedings of the 25th {International} {Society} for {Music} {Information} {Retrieval} {Conference} ({ISMIR})},
  author = {Araz, R. Oguz and Serra, Xavier and Bogdanov, Dmitry},
  year = {2024},
 }
