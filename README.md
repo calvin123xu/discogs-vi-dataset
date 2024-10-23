@@ -49,7 +49,7 @@ Three types of data are associated with the dataset: clique metadata (*Discogs-V
 
 TODO upload to zenodo, add the url here.
 
-We provide the dataset including the intermediary files of the creation process. Due to their sizes they are separated into two directories so that an intereseted person do not have to download everything. If your goal is to download the main metadata and start working, download `discogs_20240701/main/` (21GB before compressing). If for some reason you are interested in the intermediary files, you download `discogs_20240701/intermediary/` (46GB before compressing). Contents of these folders are provided in [this section](#data-structure).
+We provide the dataset including the intermediary files of the creation process. Due to their sizes they are separated into two directories so that you do not have to download everything. If your goal is to use the main metadata and start working, download `discogs_20240701/main.zip` (1.4GB compressed, 21GB uncompressed). If for some reason you are interested in the intermediary files, download `discogs_20240701/intermediary.zip` (8.7GB compressed, 46GB uncompressed). Contents of these folders are provided in [this section](#data-structure).
 
 ### Audio
 
