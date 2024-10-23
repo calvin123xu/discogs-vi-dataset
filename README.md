@@ -3,12 +3,11 @@
 TODO doi zenodo
 <!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3826813.svg)](https://doi.org/10.5281/zenodo.3826813) -->
 
-Discogs-VI is a dataset of [music version](https://en.wikipedia.org/wiki/Cover_version) metadata and precomputed audio representations, created for research on version identification (VI), also referred to as cover song identification (CSI). It was created using editorial metadata from the public [Discogs](https://discogs.com) music database by identifying version relationships among millions of tracks, utilizing metadata matching based on artist and writer credits as well as track title metadata. The identified versions comprise the *Discogs-VI* dataset, with a large portion of it mapped to official music uploads on YouTube, resulting in the *Discogs-VI-YT* subset.
+Discogs-VI is a dataset of [musical version](https://en.wikipedia.org/wiki/Cover_version) metadata and precomputed audio representations, created for research on version identification (VI), also referred to as cover song identification (CSI). It was created using editorial metadata from the public [Discogs](https://discogs.com) music database by identifying version relationships among millions of tracks, utilizing metadata matching based on artist and writer credits as well as track title metadata. The identified versions comprise the *Discogs-VI* dataset, with a large portion of it mapped to official music uploads on YouTube, resulting in the *Discogs-VI-YT* subset.
 
 In the VI literature the set of tracks that are versions of each other is defined as a *clique*. Here’s an example of the metadata for a [clique](./data/example_clique.json). *Discogs-VI* contains about 1.9 million versions belonging to around 348,000 cliques, while *Discogs-VI-YT* includes 493,000 versions across 98,000 cliques.
 
 This website accompanies the dataset and the related publication, providing summary information, instructions on access and usage, as well as the code to re-create the dataset, including audio downloads from the matched YouTube videos.
-
 
 ## Table of contents
 
@@ -31,7 +30,6 @@ This website accompanies the dataset and the related publication, providing summ
 
 Discogs regularly releases public [data dumps](https://www.discogs.com/data) containing comprehensive release metadata (such as artists, genres, styles, labels, release year, and country). See an [example](https://www.discogs.com/Prodigy-Firestarter/release/3804513) of a release page. See how the Discogs database is built [here](https://support.discogs.com/hc/en-us/articles/360008545114-Overview-Of-How-DiscogsIs-Built). You can see some statistics for all music releases submitted to Discogs on their [explore page](https://www.discogs.com/search/).
 
-
 ## Dependencies
 
 We use Python 3.10.9 on Linux.
@@ -49,10 +47,9 @@ Three types of data are associated with the dataset: clique metadata (*Discogs-V
 
 ### Metadata
 
-TODO zip the files, describe the contents in a readme file inside the main directory. add a license.
 TODO upload to zenodo, add the url here.
 
-We provide all the metadata including the intermediary files of the dataset creation process and the final outputs. Due to their sizes they are separated into two directories so that one does not have to download everything. If your goal is to download the main metadata and start working, download `discogs_20240701/main/` (21GB before compressing). If for some reason you are interested in the intermediary files, you download `discogs_20240701/intermediary/` (46GB before compressing). Contents of these folders are provided in [this section](#data-structure).
+We provide the dataset including the intermediary files of the creation process. Due to their sizes they are separated into two directories so that an intereseted person do not have to download everything. If your goal is to download the main metadata and start working, download `discogs_20240701/main/` (21GB before compressing). If for some reason you are interested in the intermediary files, you download `discogs_20240701/intermediary/` (46GB before compressing). Contents of these folders are provided in [this section](#data-structure).
 
 ### Audio
 
@@ -82,9 +79,7 @@ python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py 
 
 ### Audio representations
 
-This repository does not contain the code for extracting the CQT audio representations used to train the `Discogs-VINet` described in the paper, nor the features themselves. The model and code to extract the features are available in a separate [repository](https://github.com/raraz15/Discogs-VINet). The features we extracted are available upon request for non-commercial scientific research purposes only. Please contact [Music Technology Group](https://www.upf.edu/web/mtg/contact) to make a request.
-
-Contact: R. Oğuz Araz <recepoguz.araz@upf.edu>
+This repository does not contain the code for extracting the CQT audio representations used to train the `Discogs-VINet` described in the paper, nor the features themselves. The model and code to extract the features are available in a separate [repository](https://github.com/raraz15/Discogs-VINet). The extracted features are available upon request for non-commercial scientific research purposes. Please contact [Music Technology Group](https://www.upf.edu/web/mtg/contact) to make a request.
 
 ## Data Structure
 
@@ -171,18 +166,16 @@ The steps to re-create the dataset is detailed in a separate [README](./README-r
 
 ## Cite
 
-TODO:
-
 Please cite the following publication when using the dataset:
 
-> Araz, R. Oguz and Serra, Xavier and Bogdanov, Dmitry
+> R. O. Araz, X. Serra, and D. Bogdanov, "Discogs-VI: A musical version identification dataset based on public editorial metadata," in Proc. of the 25th Int. Soc. for Music Information Retrieval Conf. (ISMIR), 2024.
 
 ```bibtex
-@conference {,
-    author = "Araz, R. Oguz and Serra, Xavier and Bogdanov, Dmitry",
-    title = "Discogs-VI: A Musical Version Identification Dataset Based on Public Editorial Data",
-    booktitle = "",
-    year = "2024",
+@inproceedings{araz_discogs-vi_2024,
+ title = {Discogs-{VI}: {A} musical version identification dataset based on public editorial metadata},
+ booktitle = {Proc. of the 25th {Int}. {Soc}. for {Music} {Information} {Retrieval} {Conf}. ({ISMIR})},
+ author = {Araz, R. Oguz and Serra, Xavier and Bogdanov, Dmitry},
+ year = {2024},
 }
 ```
 
