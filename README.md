@@ -3,9 +3,9 @@
 TODO doi zenodo
 <!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3826813.svg)](https://doi.org/10.5281/zenodo.3826813) -->
 
-Discogs-VI is a dataset of [musical version](https://en.wikipedia.org/wiki/Cover_version) metadata and precomputed audio representations, created for research on version identification (VI), also referred to as cover song identification (CSI). It was created using editorial metadata from the public [Discogs](https://discogs.com) music database by identifying version relationships among millions of tracks, utilizing metadata matching based on artist and writer credits as well as track title metadata. The identified versions comprise the *Discogs-VI* dataset, with a large portion of it mapped to official music uploads on YouTube, resulting in the *Discogs-VI-YT* subset.
+Discogs-VI is a dataset of [musical version](https://en.wikipedia.org/wiki/Cover_version) metadata and pre-computed audio representations, created for research on version identification (VI), also referred to as cover song identification (CSI). It was created using editorial metadata from the public [Discogs](https://discogs.com) music database by identifying version relationships among millions of tracks, utilizing metadata matching based on artist and writer credits as well as track title metadata. The identified versions comprise the *Discogs-VI* dataset, with a large portion of it mapped to official music uploads on YouTube, resulting in the *Discogs-VI-YT* subset.
 
-In the VI literature the set of tracks that are versions of each other is defined as a *clique*. Here’s an example of the metadata for a [clique](./data/example_clique.json). *Discogs-VI* contains about 1.9 million versions belonging to around 348,000 cliques, while *Discogs-VI-YT* includes 493,000 versions across 98,000 cliques.
+In the VI literature the set of tracks that are versions of each other is defined as a *clique*. Here’s an example of the metadata for a [clique](./data/example_clique.json). *Discogs-VI* contains approximately 1.9 million versions belonging to around 348,000 cliques, while *Discogs-VI-YT* includes approximately 493,000 versions across about 98,000 cliques.
 
 This website accompanies the dataset and the related publication, providing summary information, instructions on access and usage, as well as the code to re-create the dataset, including audio downloads from the matched YouTube videos.
 
@@ -28,7 +28,7 @@ This website accompanies the dataset and the related publication, providing summ
 
 ## Discogs
 
-Discogs regularly releases public [data dumps](https://www.discogs.com/data) containing comprehensive release metadata (such as artists, genres, styles, labels, release year, and country). See an [example](https://www.discogs.com/Prodigy-Firestarter/release/3804513) of a release page. See how the Discogs database is built [here](https://support.discogs.com/hc/en-us/articles/360008545114-Overview-Of-How-DiscogsIs-Built). You can see some statistics for all music releases submitted to Discogs on their [explore page](https://www.discogs.com/search/).
+Discogs regularly releases public [data dumps](https://www.discogs.com/data) containing comprehensive release metadata (such as artists, genres, styles, labels, release year, and country). See an [example](https://www.discogs.com/master/92381-Benny-Benassi-Hypnotica) of a release page. See how the Discogs database is built [here](https://support.discogs.com/hc/en-us/articles/360008545114-Overview-Of-How-DiscogsIs-Built). You can see some statistics for all music releases submitted to Discogs on their [explore page](https://www.discogs.com/search/).
 
 ## Dependencies
 
@@ -49,7 +49,7 @@ Three types of data are associated with the dataset: clique metadata (*Discogs-V
 
 TODO upload to zenodo, add the url here.
 
-We provide the dataset including the intermediary files of the creation process. Due to their sizes they are separated into two directories so that you do not have to download everything. If your goal is to use the main metadata and start working, download `discogs_20240701/main.zip` (1.4GB compressed, 21GB uncompressed). If for some reason you are interested in the intermediary files, download `discogs_20240701/intermediary.zip` (8.7GB compressed, 46GB uncompressed). Contents of these folders are provided in [this section](#data-structure).
+We provide the dataset including the intermediary files of the creation process. Due to their sizes, they are separated into two directories so that you do not have to download everything. If your goal is to use the dataset and start working, download `main.zip` (1.4 GB compressed, 21 GB uncompressed).  If for some reason you are interested in the intermediary files, download `intermediary.zip` (8.7 GB compressed, 46 GB uncompressed). Contents of these folders are provided in [this section](#data-structure).
 
 ### Audio
 
@@ -91,11 +91,11 @@ Below you can find some information about the contents of the dataset and how to
 * `Discogs-VI-YT-20240701.jsonl` corresponds to *Discogs-VI-YT* subset, with versions matched to YouTube IDs and with post-processing applied to ensure that each clique has at least two downloaded versions.
 * However, we could match more videos than we could download in Barcelona between 2023-2024. Depending on your location, maybe you can download more than us. `Discogs-VI-20240701.jsonl.youtube_query_matched` contains all these YouTube IDs.
   * Some versions are matched to more than one alternative YouTube ID (1.4 videos per version on average) and the matches are sorted from the highest quality match to the lowest, although all YouTube IDs are official uploads.
-* `Discogs-VI-20240701.jsonl` and `Discogs-VI-YT-20240701.jsonl` contain rich metadata, therefore these files are large in size (around 7 GB and 4 GB). Therefore we provide a file where only clique, version, and Youtube IDs are provided: `Discogs-VI-YT-light-20240701.json`. This file is the basis for training neural networks.
+* `Discogs-VI-20240701.jsonl` and `Discogs-VI-YT-20240701.jsonl` contain rich metadata and they are large in size (around 7 GB and 4 GB). Therefore we provide a file where only clique, version, and Youtube IDs are provided: `Discogs-VI-YT-light-20240701.json`. This file is the basis for training neural networks.
 * We then create train, validation, and test partitions from `Discogs-VI-YT-light-20240701.json` after dealing with the test sets of the Da-TACOS and SHS100K datasets (see the paper for more information).
   * `Discogs-VI-YT-20240701-light.json.train`, `Discogs-VI-YT-20240701-light.json.val`, `Discogs-VI-YT-20240701-light.json.test`
-* `discogs_20240701_artists.xml.jsonl.clean` contains detailed artist related information that may be usefull.
-* `Discogs-VI-YT-20240701.jsonl.demo` should be used with the Streamlit demo for visualization purposes.
+* `discogs_20240701_artists.xml.jsonl.clean` contains detailed artist metadata that may be useful.
+* `Discogs-VI-YT-20240701.jsonl.demo` is to be used with the Streamlit demo for visualization purposes.
 
 **NOTE**: Every clique and version has a unique ID associated to them. Currently the clique IDs change between Discogs dumps (will be fixed in the code later).
 
