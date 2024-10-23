@@ -87,24 +87,25 @@ Below you can find some information about the contents of the dataset and how to
 
 ### Main files
 
-* `Discogs-VI-20240701.jsonl` corresponds to the *Discogs-VI* dataset which contains all identified cliques and their metadata. The versions are not mapped to Youtube IDs.
-* `Discogs-VI-YT-20240701.jsonl` corresponds to *Discogs-VI-YT* dataset subset, with versions mapped to YouTube IDs and post-processing to ensure that each clique has at least two downloaded versions.
-* However we could match much more videos than we could download in Barcelona between 2023-2024. Maybe depending on your location you can download more. `Discogs-VI-20240701.jsonl.youtube_query_matched` contains all these videos.
-  * Some versions are matched to more than one alternative YouTube ID (1.4 videos per version on average) and the matches are sorted from the highest quality match to the lowest, although all matches are matches to official uploads.
-* `Discogs-VI-20240701.jsonl` and `Discogs-VI-YT-20240701.jsonl` contain rich metadata, therefore these files are large in size (around 7 GB and 4 GB). Therefore we provide a file where only clique, version, and Youtube IDs are provided: `Discogs-VI-YT-light-20240701.json`
-* We then create train, validation, and test partitions from `Discogs-VI-YT-light-20240701.jsonl` after dealing with Da-TACOS and SHS100K datasets (see the paper for more information).
-* `discogs_20240701_artists.xml.jsonl.clean` contains detailed artist related information.
+* `Discogs-VI-20240701.jsonl` corresponds to the *Discogs-VI* dataset which contains all identified cliques and their metadata. The versions are not matched to Youtube IDs.
+* `Discogs-VI-YT-20240701.jsonl` corresponds to *Discogs-VI-YT* subset, with versions matched to YouTube IDs and with post-processing applied to ensure that each clique has at least two downloaded versions.
+* However, we could match more videos than we could download in Barcelona between 2023-2024. Depending on your location, maybe you can download more than us. `Discogs-VI-20240701.jsonl.youtube_query_matched` contains all these YouTube IDs.
+  * Some versions are matched to more than one alternative YouTube ID (1.4 videos per version on average) and the matches are sorted from the highest quality match to the lowest, although all YouTube IDs are official uploads.
+* `Discogs-VI-20240701.jsonl` and `Discogs-VI-YT-20240701.jsonl` contain rich metadata, therefore these files are large in size (around 7 GB and 4 GB). Therefore we provide a file where only clique, version, and Youtube IDs are provided: `Discogs-VI-YT-light-20240701.json`. This file is the basis for training neural networks.
+* We then create train, validation, and test partitions from `Discogs-VI-YT-light-20240701.json` after dealing with the test sets of the Da-TACOS and SHS100K datasets (see the paper for more information).
+  * `Discogs-VI-YT-20240701-light.json.train`, `Discogs-VI-YT-20240701-light.json.val`, `Discogs-VI-YT-20240701-light.json.test`
+* `discogs_20240701_artists.xml.jsonl.clean` contains detailed artist related information that may be usefull.
 * `Discogs-VI-YT-20240701.jsonl.demo` should be used with the Streamlit demo for visualization purposes.
 
 **NOTE**: Every clique and version has a unique ID associated to them. Currently the clique IDs change between Discogs dumps (will be fixed in the code later).
 
 ### Intermediary files
 
-* `discogs_20240701_artists.xml.jsonl` is the Discogs artist data dump xml file parsed to a json file with some processing. It contains artist information such as aliases, group memberships, or name variations.
-* `discogs_20240701_releases.xml.jsonl` is the parsed releases file.
+* `discogs_20240701_artists.xml.jsonl` is the Discogs artist data dump xml file parsed to a jsonl file with some processing. It contains artist information such as aliases, group memberships, or name variations.
+* `discogs_20240701_releases.xml.jsonl` is the Discogs release data dump xml file parsed releases to a jsonl file with some processing.
 * `discogs_20240701_releases.xml.jsonl.clean` is the cleaned version.
-* `discogs_20240701_releases.xml.jsonl.clean.tracks` parses the releases to tracks.
-* `Discogs-VI-20240701-DaTACOS-SHS100K2_TEST-lost_cliques.txt` contains the clique ids in Discogs-VI that intersect with Da-TACOS and SHS100K datasets.
+* `discogs_20240701_releases.xml.jsonl.clean.tracks` contains the tracks from the clean releases. It is used for identifying the cliques.
+* `Discogs-VI-20240701-DaTACOS-SHS100K2_TEST-lost_cliques.txt` contains the clique ids in Discogs-VI that intersect with Da-TACOS and SHS100K test sets.
 * `Discogs-VI-20240701.jsonl.queries` contains the query strings that was created to search the versions on YouTube.
 
 ### Loading with python
@@ -137,18 +138,18 @@ with open("Discogs-VI-YT-light-20240701.json") as in_f:
 # Access the data
 ```
 
+#### Rest of the files
+
 ```python
 with open("discogs_20240701_artists.xml.jsonl.clean", encoding="utf-8") as infile:
     for jsonline in infile:
         artist = json.loads(jsonline)
 ```
 
-#### Rest of the files
-
-* `discogs_20240701_artists.xml.jsonl`, `discogs_20240701_releases.xml.jsonl`, `discogs_20240701_releases.xml.jsonl.clean`, discogs_20240701_releases.xml.jsonl.clean.tracks are JSONL files with utf-8 encoding.
+* `discogs_20240701_artists.xml.jsonl`, `discogs_20240701_artists.xml.jsonl.clean`, `discogs_20240701_releases.xml.jsonl`, `discogs_20240701_releases.xml.jsonl.clean`, discogs_20240701_releases.xml.jsonl.clean.tracks are JSONL files with utf-8 encoding.
 * `Discogs-VI-20240701-DaTACOS-SHS100K2_TEST-lost_cliques.txt` and `Discogs-VI-20240701.jsonl.queries` are line-delimited text files.
 
-Please refer to the code for more examples.
+Please refer to our [GitHub Repository](https://github.com/MTG/discogs-vi-dataset/) for more examples.
 
 ## Discogs-VI-YT Streamlit demo
 
