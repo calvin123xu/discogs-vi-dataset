@@ -52,6 +52,8 @@ We provide the dataset including the intermediary files of the creation process.
 
 You can download the audio files corresponding to the YouTube IDs of the versions. In our experiments, we used exactly these IDs.
 
+We have been able to conduct the downloads from our research institution under Directive (EU) 2019/790 on Copyright in the Digital Single Market, which includes text and data mining exceptions for the purposes of scientific research (Article 3).
+
 ```bash
 python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py Discogs-VI-YT-20240701.jsonl music_dir/
 ```
