@@ -179,7 +179,7 @@ Please cite the following publication when using the dataset:
 
 ## License
 
-* The code in this repository is licensed under TODO.
+* The code in this repository is licensed under the [Affero GPLv3](https://www.tldrlegal.com/license/gnu-affero-general-public-license-v3-agpl-3-0) license.
 * The metadata is licensed under a [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
 * Audio representations are available under request for non-commercial scientific research purposes only.
 
