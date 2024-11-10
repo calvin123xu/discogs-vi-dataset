@@ -6,7 +6,7 @@ Discogs-VI is a dataset of [musical version](https://en.wikipedia.org/wiki/Cover
 
 In the VI literature the set of tracks that are versions of each other is defined as a *clique*. Here’s an example of the metadata for a [clique](./data/example_clique.json). *Discogs-VI* contains approximately 1.9 million versions belonging to around 348,000 cliques, while *Discogs-VI-YT* includes approximately 493,000 versions across about 98,000 cliques.
 
-This website accompanies the dataset and the related publication, providing summary information, instructions on access and usage, as well as the code to re-create the dataset, including audio downloads from the matched YouTube videos.
+This website accompanies the dataset and the related publication, providing summary information, instructions on access and usage, as well as the code to re-create the dataset, including audio downloads from the matched YouTube videos. The code for dataset re-creation can be found [here](https://github.com/MTG/discogs-vi-dataset).
 
 ## Table of contents
 
