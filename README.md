@@ -13,10 +13,10 @@ This website accompanies the dataset and the related publication, providing summ
 * [Discogs](#discogs)
 * [Dependencies](#dependencies)
 * [Download](#download)
-  * [Metadata](#metadata)
-  * [Audio](#audio)
-  * [Audio repesentations](#audio-representations)
-* [Data Structure](#data-structure)
+  * [Metadata](#1-metadata)
+  * [Audio](#2-audio)
+  * [Audio repesentations](#3-audio-representations)
+* [Metadata Structure](#metadata)
   * [Main files](#main-files)
   * [Intermediary files](#intermediary-files)
   * [Loading with python](#loading-with-python)
@@ -42,13 +42,24 @@ conda activate discogs-vi-dataset
 
 ## Download
 
-Three types of data are associated with the dataset: clique metadata (*Discogs-VI*), clique metadata with YouTube ID-matched versions (*Discogs-VI-YT*), and audio representations such as CQT (Constant-Q Transform) extracted for the versions of Discogs-VI. This section provides details on how to access each type of data.
+Three types of data are associated with the dataset:
 
-### Metadata
+1. Metadata
+    * clique and version metadata (*Discogs-VI*),
+    * clique and version metadata with only YouTube ID-matched versions (*Discogs-VI-YT*),
+    * more metadata as explained in [this section](#metadata).
+2. Audio
+    * In the form of YouTube IDs. We do not share any audio.
+3. Audio representations
+    * audio representations such as CQT (Constant-Q Transform) extracted for the versions of Discogs-VI-YT.
 
-We provide the dataset including the intermediary files of the creation process. Due to their sizes, they are separated into two directories so that you do not have to download everything. If your goal is to use the dataset and start working, download `main.zip` (1.4 GB compressed, 21 GB uncompressed). If for some reason you are interested in the intermediary files, download `intermediary.zip` (8.7 GB compressed, 46 GB uncompressed). Contents of these folders are provided in [this section](#data-structure). You can download the data from [Zenodo](https://doi.org/10.5281/zenodo.13983028)
+This section provides details on how to access each. The details are provided in later sections.
 
-### Audio
+### 1. Metadata
+
+We provide the dataset including the intermediary files of the creation process. Due to their sizes, they are separated into two directories so that you do not have to download everything. If your goal is to use the dataset and start working, download `main.zip` (1.4 GB compressed, 21 GB uncompressed). If for some reason you are interested in the intermediary files, download `intermediary.zip` (8.7 GB compressed, 46 GB uncompressed). Contents of these folders are provided in [this section](#metadata). You can download these two zip files from [Zenodo](https://doi.org/10.5281/zenodo.13983028).
+
+### 2. Audio
 
 You can download the audio files corresponding to the YouTube IDs of the versions. In our experiments, we used exactly these IDs.
 
@@ -67,7 +78,7 @@ python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py 
 **NOTE**: We recommend parallelizing this operation because there are many audio files using `utilities/shuffle_and_split.sh`. However, if you use too many parallel processes you may get banned from YouTube. We experimented with 2-20 processes. Using more than 10 processes got us banned a few times. In that case, you should stop downloading and wait a couple of days before trying again.
 
 ```bash
-utilities/shuffle_and_split.sh Discogs-VI-YT-20240701.jsonl 16
+utilities/shuffle_and_split.sh Discogs-VI-YT-20240701.jsonl 10
 ```
 
 Then open up multiple terminal instances and call each split separately.
@@ -76,11 +87,21 @@ Then open up multiple terminal instances and call each split separately.
 python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py Discogs-VI-20240701.jsonl.youtube_query_matched.split.00 music_dir/
 ```
 
-### Audio representations
+Once you finish downloading, there will be many versions who are the only downloaded versions from their clique, you should filter these out with `discogs_vi_yt/post_processing.py`. I recommend reading [here](README-recreate/#re-create-discogs-vi-yt) for more information.
+
+**IMPORTANT NOTE**: Now that you have the data ready, you could start training VI models. However, in that case you would need validation and test sets. We provide **official** splits that consider Da-TACOS benchmark and SHS100K-TEST sets (Check [here](#metadata) or read the paper for more info). However, the audio files we could download are probably different than yours, so you will have to filter these files based on what you could download. You should use the following script to align your downloaded data to the official splits.
+
+```bash
+python utilities/align_to_official_splits.py /path/to/Discogs-VI-YT/main/ /path/to/videos/
+```
+
+This script will automatically align the train, val, and test splits and print statistics on what percentage of the data you could actually find. You should report these percentages if you publish a paper for accurate cocmparison.
+
+### 3. Audio representations
 
 This repository does not contain the code for extracting the CQT audio representations used to train the `Discogs-VINet` described in the paper, nor the features themselves. The model and code to extract the features are available in a separate [repository](https://github.com/raraz15/Discogs-VINet). The extracted features are available upon request for non-commercial scientific research purposes. Please contact [Music Technology Group](https://www.upf.edu/web/mtg/contact) to make a request.
 
-## Data Structure
+## Metadata
 
 Below you can find some information about the contents of the dataset and how to load them using Python.
 
@@ -173,8 +194,9 @@ Please cite the following publication when using the dataset:
 ```bibtex
 @inproceedings{araz_discogs-vi_2024,
  title = {Discogs-{VI}: {A} musical version identification dataset based on public editorial metadata},
- booktitle = {Proceedings of the 25th {International} {Society} for {Music} {Information} {Retrieval} {Conference} ({ISMIR})},
  author = {Araz, R. Oguz and Serra, Xavier and Bogdanov, Dmitry},
+ booktitle = {Proceedings of the 25th {International} {Society} for {Music} {Information} {Retrieval} {Conference} ({ISMIR})},
+ address   = {San Francisco, CA, USA},
  year = {2024},
 }
 ```
