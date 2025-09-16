@@ -7,3 +7,16 @@ __pycache__/*
 *.mp4
 *.meta
 *.log
+# Dataset files
+*.jsonl.youtube_query_matched*
+Discogs-VI-*.jsonl.youtube_query_matched*
+
+# Music directories
+music_dir/
+music_dir_dashed_back/
+
+# SLURM output files
+slurm_out/
+*.out
+
+
