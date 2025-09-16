@@ -7,6 +7,7 @@ import sys
 import json
 import time
 import csv
+import random
 import argparse
 
 import yt_dlp as youtube_dl
@@ -37,7 +38,7 @@ YDL_OPTS = {
     # }
 }
 
-
+"""
 def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
     # See youtube_dl options here:
     # https://github.com/ytdl-org/youtube-dl/blob/master/README.md#embedding-youtube-dl
@@ -80,6 +81,75 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
                 status = "check log"
         del YDL_OPTS["outtmpl"]
     return (yt_id, output_mp4, output_meta, output_log, status)
+"""
+
+
+def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
+    url = get_youtube_url(yt_id)
+    output_mp4 = os.path.join(root_dir, f"{yt_id}.m4a")
+    output_meta = os.path.join(root_dir, f"{yt_id}.json")
+    output_log = os.path.join(root_dir, f"{yt_id}.log")
+
+    # 如果已经存在就直接跳过
+    if os.path.exists(output_mp4) and os.path.exists(output_meta) and not force_failed:
+        return (yt_id, output_mp4, output_meta, output_log, "already_downloaded")
+
+    YDL_OPTS = {
+        "format": "140",          # 只要音频 m4a
+        "noplaylist": True,
+        "force_ipv4": True,
+        "quiet": True,
+        "outtmpl": output_mp4,
+        "ratelimit": 500_000,     # 限速 500KB/s
+    }
+
+    max_retries = 1
+    status = "failed"
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
+                # 下载音频
+                ydl.download([url])
+                # 提取元数据
+                meta = ydl.extract_info(url, download=False)
+
+            with open(output_meta, "w", encoding="utf-8") as f:
+                json.dump(meta, f, indent=2)
+
+            status = "downloaded"
+            break
+
+        except youtube_dl.utils.DownloadError as e:
+            err_msg = str(e)
+            if "HTTP Error 429" in err_msg or "HTTP Error 403" in err_msg:
+                wait_time = 0
+                if max_retries > 1:
+                    wait_time = 30 + random.randint(0, 30)
+                else:
+                    wait_time = 0
+                print(f"[{yt_id}] Attempt {attempt}/{max_retries}: {err_msg}, sleeping {wait_time}s...")
+                time.sleep(wait_time)
+                continue
+            else:
+                print(f"[{yt_id}] Fatal error: {err_msg}")
+                status = "check log"
+                break
+
+        except Exception as e:
+            print(f"[{yt_id}] Unexpected error: {e}")
+            status = "check log"
+            break
+
+    # 在失败的情况下写 log 文件
+    if status != "downloaded":
+        with open(output_log, "w", encoding="utf-8") as f:
+            f.write(status)
+
+    return (yt_id, output_mp4, output_meta, output_log, status)
+
+
+
 
 
 def main(input_ids, root_dir, force_failed=False):
