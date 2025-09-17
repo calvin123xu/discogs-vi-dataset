@@ -12,6 +12,8 @@ import argparse
 
 import yt_dlp as youtube_dl
 
+from fake_useragent import UserAgent  # pip install fake-useragent
+
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from query_yt.utils_query import get_youtube_url, escape_ansi, seconds_to_dhms
@@ -90,17 +92,21 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
     output_meta = os.path.join(root_dir, f"{yt_id}.json")
     output_log = os.path.join(root_dir, f"{yt_id}.log")
 
-    # 如果已经存在就直接跳过
     if os.path.exists(output_mp4) and os.path.exists(output_meta) and not force_failed:
         return (yt_id, output_mp4, output_meta, output_log, "already_downloaded")
 
+    # 生成随机 User-Agent
+    ua = UserAgent()
+    random_agent = ua.random
+
     YDL_OPTS = {
-        "format": "140",          # 只要音频 m4a
+        "format": "140",
         "noplaylist": True,
         "force_ipv4": True,
         "quiet": True,
         "outtmpl": output_mp4,
-        "ratelimit": 500_000,     # 限速 500KB/s
+        "ratelimit": 500_000,
+        "headers": {"User-Agent": random_agent},  # 设置随机 User-Agent
     }
 
     max_retries = 1
@@ -109,9 +115,7 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
     for attempt in range(1, max_retries + 1):
         try:
             with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
-                # 下载音频
                 ydl.download([url])
-                # 提取元数据
                 meta = ydl.extract_info(url, download=False)
 
             with open(output_meta, "w", encoding="utf-8") as f:
@@ -126,9 +130,6 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
                 wait_time = 0
                 if max_retries > 1:
                     wait_time = 30 + random.randint(0, 30)
-                else:
-                    wait_time = 0
-                print(f"[{yt_id}] Attempt {attempt}/{max_retries}: {err_msg}, sleeping {wait_time}s...")
                 time.sleep(wait_time)
                 continue
             else:
@@ -141,7 +142,6 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
             status = "check log"
             break
 
-    # 在失败的情况下写 log 文件
     if status != "downloaded":
         with open(output_log, "w", encoding="utf-8") as f:
             f.write(status)
@@ -162,6 +162,9 @@ def main(input_ids, root_dir, force_failed=False):
             logger.writerow(
                 download_audio_and_metadata(yt_id, root_dir, force_failed=force_failed)
             )
+              # pause for random time 
+            pause = random.uniform(5,10)
+            time.sleep(pause)
             counter += 1
             print("=" * 15 + f"Processed {counter:,} ids" + "=" * 15)
     print(f"Total time: {seconds_to_dhms(time.monotonic() - t0)}")
