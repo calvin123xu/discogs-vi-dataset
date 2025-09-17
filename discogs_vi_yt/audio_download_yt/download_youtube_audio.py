@@ -40,50 +40,6 @@ YDL_OPTS = {
     # }
 }
 
-"""
-def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
-    # See youtube_dl options here:
-    # https://github.com/ytdl-org/youtube-dl/blob/master/README.md#embedding-youtube-dl
-
-    url = get_youtube_url(yt_id)
-
-    log_dir = os.path.join(root_dir, "logs")
-    audio_dir = os.path.join(root_dir, "audio")
-
-    prefix = yt_id[:2]
-    output_mp4 = os.path.join(audio_dir, prefix, f"{yt_id}.mp4")
-    output_meta = os.path.join(audio_dir, prefix, f"{yt_id}.meta")
-    output_log = os.path.join(log_dir, prefix, f"{yt_id}.log")
-
-    if os.path.exists(output_mp4) and os.path.exists(output_meta):
-        status = "file exists"
-    elif os.path.exists(output_log) and not force_failed:
-        status = "download previously failed"
-    else:
-        # Output filename.
-        YDL_OPTS["outtmpl"] = output_mp4
-        with youtube_dl.YoutubeDL(YDL_OPTS) as ydl:
-            try:
-                ydl.download([url])
-                meta = ydl.extract_info(url, download=False)
-                meta = ydl.sanitize_info(meta)
-                with open(output_meta, "w", encoding="utf-8") as out_f:
-                    out_f.write(json.dumps(meta, ensure_ascii=False) + "\n")
-                status = "downloaded"
-
-            # TODO TypeError exception should not happen, this is an upstream bug in youtube-dl.
-            except (youtube_dl.utils.DownloadError, TypeError) as e:
-                status = escape_ansi(str(e))
-                if "HTTP Error 429: Too Many Requests" not in status:
-                    os.makedirs(os.path.dirname(output_log), exist_ok=True)
-                    with open(output_log, "w") as f:
-                        f.write(
-                            "\t".join((yt_id, output_mp4, output_meta, status)) + "\n"
-                        )
-                status = "check log"
-        del YDL_OPTS["outtmpl"]
-    return (yt_id, output_mp4, output_meta, output_log, status)
-"""
 
 
 def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
@@ -155,15 +111,23 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
 def main(input_ids, root_dir, force_failed=False):
     counter = 0
     t0 = time.monotonic()
+
+    # 读取所有 ID
+    with open(input_ids, "r") as f:
+        yt_ids = [line.strip() for line in f if line.strip()]
+
+    # 打乱顺序
+    random.shuffle(yt_ids)
+
     with open(input_ids + ".log", "w") as logfile:
         logger = csv.writer(logfile, delimiter="\t")
-        for yt_id in open(input_ids, "r"):
+        for yt_id in yt_ids:
             yt_id = yt_id.strip("\n")
             logger.writerow(
                 download_audio_and_metadata(yt_id, root_dir, force_failed=force_failed)
             )
               # pause for random time 
-            pause = random.uniform(5,10)
+            pause = random.uniform(5,20)
             time.sleep(pause)
             counter += 1
             print("=" * 15 + f"Processed {counter:,} ids" + "=" * 15)
