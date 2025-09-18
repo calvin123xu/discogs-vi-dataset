@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=20G
 #SBATCH -p pt
-#SBATCH --time=06:00:00
+#SBATCH --time=01:00:00
 
 # 环境设置
 cd /speed-scratch/qiaoyu/speed-hpc/project/discogs-vi-dataset
@@ -19,4 +19,4 @@ conda activate /speed-scratch/qiaoyu/speed-hpc/env/discogs-vi-dataset
 
 # 运行下载脚本
 srun python discogs_vi_yt/audio_download_yt/download_missing_version_youtube_urls.py \
-    Discogs-VI-20240701.jsonl.youtube_query_matched.split.01 music_dir/
+    metadata/Discogs-VI-YT-20240701.jsonl.split.00 music_dir/

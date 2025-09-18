@@ -76,7 +76,8 @@ if __name__ == "__main__":
                 if any(
                     [
                         os.path.isfile(
-                            os.path.join(video_dir, yt_id[:2], yt_id + ".mp4")
+                            #os.path.join(video_dir, yt_id[:2], yt_id + ".mp4")
+                            os.path.join(video_dir, yt_id + ".m4a")
                         )
                         for video_dir in args.video_directory
                     ]
