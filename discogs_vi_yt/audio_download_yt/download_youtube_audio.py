@@ -48,8 +48,25 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
     output_meta = os.path.join(root_dir, f"{yt_id}.json")
     output_log = os.path.join(root_dir, f"{yt_id}.log")
 
+    # 检查已下载
     if os.path.exists(output_mp4) and os.path.exists(output_meta) and not force_failed:
         return (yt_id, output_mp4, output_meta, output_log, "already_downloaded")
+
+    # 检查之前是否失败过（除非强制重试）
+    if os.path.exists(output_log) and not force_failed:
+        # 读取log内容判断是否为permanent failure
+        try:
+            with open(output_log, 'r', encoding='utf-8') as f:
+                log_content = f.read()
+                # 如果是unavailable类型的错误，直接跳过
+                if any(keyword in log_content.lower() for keyword in [
+                    'unavailable', 'private video', 'deleted', 'blocked', 
+                    'not available', 'removed', 'copyright', 'permanently_unavailable'
+                ]):
+                    return (yt_id, output_mp4, output_meta, output_log, "permanently_unavailable")
+        except:
+            pass
+        return (yt_id, output_mp4, output_meta, output_log, "download_previously_failed")
 
     # 生成随机 User-Agent
     ua = UserAgent()
@@ -67,6 +84,7 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
 
     max_retries = 1
     status = "failed"
+    error_details = ""
 
     for attempt in range(1, max_retries + 1):
         try:
@@ -82,25 +100,43 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
 
         except youtube_dl.utils.DownloadError as e:
             err_msg = str(e)
-            if "HTTP Error 429" in err_msg or "HTTP Error 403" in err_msg:
+            error_details = err_msg
+            
+            # 检查是否为permanent unavailable错误
+            unavailable_keywords = [
+                'unavailable', 'private video', 'video not available',
+                'this video is not available', 'video has been removed',
+                'blocked', 'deleted', 'no longer available', 'copyright'
+            ]
+            
+            if any(keyword in err_msg.lower() for keyword in unavailable_keywords):
+                status = "permanently_unavailable"
+                print(f"[{yt_id}] Video permanently unavailable: {err_msg}")
+                break
+            elif "HTTP Error 429" in err_msg or "HTTP Error 403" in err_msg:
                 wait_time = 0
                 if max_retries > 1:
                     wait_time = 30 + random.randint(0, 30)
                 time.sleep(wait_time)
+                status = "rate_limited"
                 continue
             else:
                 print(f"[{yt_id}] Fatal error: {err_msg}")
-                status = "check log"
+                status = "download_error"
                 break
 
         except Exception as e:
+            error_details = str(e)
             print(f"[{yt_id}] Unexpected error: {e}")
-            status = "check log"
+            status = "unexpected_error"
             break
 
+    # 记录详细的失败信息
     if status != "downloaded":
         with open(output_log, "w", encoding="utf-8") as f:
-            f.write(status)
+            f.write(f"Status: {status}\n")
+            f.write(f"Error: {error_details}\n")
+            f.write(f"Timestamp: {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
 
     return (yt_id, output_mp4, output_meta, output_log, status)
 
@@ -110,6 +146,7 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
 
 def main(input_ids, root_dir, force_failed=False):
     counter = 0
+    skipped_unavailable = 0
     t0 = time.monotonic()
 
     # 读取所有 ID
@@ -123,15 +160,24 @@ def main(input_ids, root_dir, force_failed=False):
         logger = csv.writer(logfile, delimiter="\t")
         for yt_id in yt_ids:
             yt_id = yt_id.strip("\n")
-            logger.writerow(
-                download_audio_and_metadata(yt_id, root_dir, force_failed=force_failed)
-            )
-              # pause for random time 
-            pause = random.uniform(5,20)
-            time.sleep(pause)
+            result = download_audio_and_metadata(yt_id, root_dir, force_failed=force_failed)
+            logger.writerow(result)
+            
+            # 统计跳过的unavailable视频
+            if result[4] == "permanently_unavailable":
+                skipped_unavailable += 1
+                print(f"[SKIPPED] {yt_id} - permanently unavailable")
+            else:
+                # 只在非跳过的情况下暂停
+                pause = random.uniform(5,20)
+                time.sleep(pause)
+            
             counter += 1
-            print("=" * 15 + f"Processed {counter:,} ids" + "=" * 15)
+            if counter % 10 == 0:  # 每10个显示一次统计
+                print("=" * 15 + f"Processed {counter:,} ids (Skipped unavailable: {skipped_unavailable})" + "=" * 15)
+    
     print(f"Total time: {seconds_to_dhms(time.monotonic() - t0)}")
+    print(f"Total processed: {counter}, Skipped unavailable: {skipped_unavailable}")
 
 
 if __name__ == "__main__":
