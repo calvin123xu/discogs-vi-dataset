@@ -9,7 +9,7 @@
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=20G
 #SBATCH -p pt
-#SBATCH --time=01:00:00
+#SBATCH --time=03:00:00
 
 # 环境设置
 cd /speed-scratch/qiaoyu/speed-hpc/project/discogs-vi-dataset
