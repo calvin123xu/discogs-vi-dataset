@@ -85,6 +85,7 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
     max_retries = 1
     status = "failed"
     error_details = ""
+    should_create_log = True  # 新增：控制是否创建log文件
 
     for attempt in range(1, max_retries + 1):
         try:
@@ -96,13 +97,33 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
                 json.dump(meta, f, indent=2)
 
             status = "downloaded"
+            should_create_log = False  # 成功下载，不需要创建log
             break
 
         except youtube_dl.utils.DownloadError as e:
             err_msg = str(e)
             error_details = err_msg
             
-            # 检查是否为permanent unavailable错误
+            # 优先处理网络/限流错误（这些是临时性的）
+            if "HTTP Error 429" in err_msg or "HTTP Error 403" in err_msg:
+                if attempt < max_retries:
+                    wait_time = 30 + random.randint(0, 30)
+                    print(f"[{yt_id}] Rate limited, waiting {wait_time}s (attempt {attempt}/{max_retries})")
+                    time.sleep(wait_time)
+                    continue
+                else:
+                    # 重试用完后的处理
+                    status = "rate_limited"
+                    print(f"[{yt_id}] Rate limit exceeded after {max_retries} attempts")
+                    
+                    # 关键逻辑：如果max_retries=1且遇到429/403，不创建log文件
+                    if max_retries == 1:
+                        should_create_log = False
+                        print(f"[{yt_id}] Rate limited with max_retries=1, will retry next time")
+                    
+                    break
+            
+            # 然后检查是否为永久性不可用错误
             unavailable_keywords = [
                 'unavailable', 'private video', 'video not available',
                 'this video is not available', 'video has been removed',
@@ -113,13 +134,6 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
                 status = "permanently_unavailable"
                 print(f"[{yt_id}] Video permanently unavailable: {err_msg}")
                 break
-            elif "HTTP Error 429" in err_msg or "HTTP Error 403" in err_msg:
-                wait_time = 0
-                if max_retries > 1:
-                    wait_time = 30 + random.randint(0, 30)
-                time.sleep(wait_time)
-                status = "rate_limited"
-                continue
             else:
                 print(f"[{yt_id}] Fatal error: {err_msg}")
                 status = "download_error"
@@ -131,8 +145,8 @@ def download_audio_and_metadata(yt_id, root_dir, force_failed=False):
             status = "unexpected_error"
             break
 
-    # 记录详细的失败信息
-    if status != "downloaded":
+    # 只在需要时记录详细的失败信息
+    if status != "downloaded" and should_create_log:
         with open(output_log, "w", encoding="utf-8") as f:
             f.write(f"Status: {status}\n")
             f.write(f"Error: {error_details}\n")
